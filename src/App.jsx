@@ -1,4 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import TrafficLight from "./components/trafficLitgh";
+import Controls from "./components/controls";
+
 import "./App.css";
 
 function App() {
@@ -24,6 +27,8 @@ function App() {
       intervalRef.current = setInterval(() => {
         setActiveLight((prev) => getNextLight(prev));
       }, 2000);
+    } else {
+      clearInterval(intervalRef.current);
     }
 
     return () => clearInterval(intervalRef.current);
@@ -35,7 +40,7 @@ function App() {
 
   const toggleManual = () => {
     setIsManual((prev) => !prev);
-    setIsRunning(false); // وقتی می‌ریم به manual، حالت auto قطع شه
+    setIsRunning(false);
   };
 
   const goToNextLight = () => {
@@ -48,27 +53,15 @@ function App() {
 
   return (
     <div className="container">
-      <div className="traffic-light">
-        <div className={`light red ${activeLight === "red" ? "active" : ""}`}></div>
-        <div className={`light yellow ${activeLight === "yellow" ? "active" : ""}`}></div>
-        <div className={`light green ${activeLight === "green" ? "active" : ""}`}></div>
-      </div>
-
-      <div className="controls">
-        <button onClick={toggleRunning} disabled={isManual}>
-          {isRunning ? "Stop" : "Start"}
-        </button>
-        <button onClick={toggleManual}>
-          {isManual ? "Switch to Auto" : "Switch to Manual"}
-        </button>
-
-        {isManual && (
-          <>
-            <button onClick={goToPreviousLight}>Previous Light</button>
-            <button onClick={goToNextLight}>Next Light</button>
-          </>
-        )}
-      </div>
+      <TrafficLight activeLight={activeLight} />
+      <Controls
+        isRunning={isRunning}
+        isManual={isManual}
+        toggleRunning={toggleRunning}
+        toggleManual={toggleManual}
+        goToNextLight={goToNextLight}
+        goToPreviousLight={goToPreviousLight}
+      />
     </div>
   );
 }
